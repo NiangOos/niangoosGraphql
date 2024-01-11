@@ -1,0 +1,94 @@
+query getUserInfo($name: String!) {
+	xp_view_aggregate(
+		where: {
+			_or: [
+				{ event: { _and: [{ registrationId: { _eq: 55 } }] }, user: { login: { _eq: $name } } }
+				{ event: { path: { _ilike: "%/dakar/div-01/checkpoint%" } }, user: { login: { _eq: $name } } }
+			]
+		}
+	) {
+		aggregate {
+			sum {
+				amount
+			}
+		}
+	}
+	event_user(
+		where: { event: { path: { _eq: "/dakar/div-01" } }, user: { login: { _eq: $name } } }
+		order_by: { user: { login: asc } }
+	) {
+		level
+		event {
+			object {
+				name
+			}
+		}
+		user {
+			audits(where: { auditorLogin: { _eq: $name }, _and: { grade: { _is_null: false } } }) {
+				auditorLogin
+				grade
+
+				group {
+					captainLogin
+					object {
+						name
+					}
+				}
+			}
+			auditRatio
+			login
+			lastName
+			firstName
+			attrs
+			projectsFinished: progresses_aggregate(
+				distinct_on: [objectId]
+				where: { event: { object: { id: { _eq: 100256 } }, _and: { campus: { _eq: "dakar" } } }, isDone: { _eq: true } }
+			) {
+				aggregate {
+					count
+				}
+			}
+			projectsInProgress: progresses_aggregate(
+				where: { _and: [{ path: { _ilike: "%/div-01/%" } }, { isDone: { _eq: false } }] }
+			) {
+				aggregate {
+					count
+				}
+			}
+			ProjectValidated: progresses(
+				where: { grade: { _gt: 1 }, _and: { path: { _ilike: "%/div-01/%" } }, isDone: { _eq: true } }
+				order_by: { updatedAt: desc }
+			) {
+				group {
+					captainLogin
+					members {
+						userLogin
+					}
+					auditors(where: { grade: { _is_null: false } }) {
+						auditorLogin
+						grade
+					}
+				}
+				updatedAt
+				grade
+				object {
+					name
+				}
+			}
+			AllCheckpointDid: progresses_aggregate(
+				where: { object: { name: { _eq: "Checkpoint" } }, grade: { _is_null: false } }
+			) {
+				aggregate {
+					count
+				}
+			}
+			results(
+				where: { object: { name: { _eq: "Checkpoint" } }, grade: { _is_null: false } }
+				order_by: { grade: desc }
+				limit: 1
+			) {
+				grade
+			}
+		}
+	}
+}
