@@ -1,4 +1,6 @@
 import AbstractView from "./AbstractView.js";
+import * as func from "../js/functions.js";
+import { navigateTo } from "../js/router.js";
 
 export default class Signin extends AbstractView {
 	constructor() {
@@ -9,7 +11,7 @@ export default class Signin extends AbstractView {
 	async getHTML() {
 		return `
 			<div id="form-ui">
-				<form action="" method="post" id="form">
+				<form id="form">
 					<div id="form-body">
 						<div id="welcome-lines">
 							<div id="welcome-line-1">Graphql</div>
@@ -17,14 +19,17 @@ export default class Signin extends AbstractView {
 						</div>
 						<div id="input-area">
 							<div class="form-inp">
-								<input placeholder="Email Address" type="text" />
+								<input id="nicknameOrEmail" placeholder="Email or Username" type="text" />
 							</div>
 							<div class="form-inp">
-								<input placeholder="Password" type="password" />
+								<input id="pwd" placeholder="Password" type="password" />
 							</div>
 						</div>
 						<div id="submit-button-cvr">
 							<button id="submit-button" type="submit">Login</button>
+						</div>
+						<div id="forgot-pass">
+							<p id="errortxtfield"></p>
 						</div>
 					</div>
 				</form>
@@ -32,22 +37,72 @@ export default class Signin extends AbstractView {
 		`;
 	}
 
-	async submitForm() {
-		const nicknameOrEmail = document.getElementById("nicknameOrEmail");
-		const password = document.getElementById("password");
+	// async submitForm() {
+	// 	const nicknameOrEmail = document.getElementById("nicknameOrEmail");
+	// 	const password = document.getElementById("password");
 
-		const userData = {
-			nicknameOrEmail: nicknameOrEmail.value,
-			password: password.value,
-		};
+	// 	const userData = {
+	// 		nicknameOrEmail: nicknameOrEmail.value,
+	// 		password: password.value,
+	// 	};
 
-		const jsonString = JSON.stringify(userData);
-	}
+	// 	const jsonString = JSON.stringify(userData);
+	// }
 
 	async render() {
 		document.title = "Sign In";
+
+		const jwt = localStorage.getItem("jwt");
+		if (jwt) {
+			navigateTo("/profile");
+			console.log("You already connected");
+			return;
+		}
+
 		const container = document.getElementById("app");
 		container.innerHTML = await this.getHTML();
+
+		document.getElementById("form").addEventListener("submit", async (event) => {
+			event.preventDefault();
+			const nicknameOrEmail = document.getElementById("nicknameOrEmail").value;
+			const pwd = document.getElementById("pwd").value;
+
+			if (!nicknameOrEmail || !pwd) {
+				func.DisplayError("Please fill in all fields");
+				return;
+			}
+
+			const credentials = `${nicknameOrEmail}:${pwd}`;
+			const base64Credentials = btoa(credentials);
+
+			try {
+				const response = await fetch("https://learn.zone01dakar.sn/api/auth/signin", {
+					method: "POST",
+					headers: {
+						Authorization: `Basic ${base64Credentials}`,
+						"Content-Type": "application/json",
+					},
+				});
+
+				if (!response.ok) {
+					if (response.status === 401) {
+						func.DisplayError("Invalid credentials");
+					}
+					if (response.status === 403) {
+						func.DisplayError("Wrong password");
+					}
+					return;
+				}
+
+				const responseData = await response.json();
+				localStorage.setItem("jwt", responseData);
+
+				navigateTo("/profile");
+			} catch (error) {
+				func.DisplayError("Something went wrong !");
+				console.log(error);
+			}
+		});
 
 		// const eyePwd = document.getElementById("eyepwd");
 		// const passwordInput = document.getElementById("password");

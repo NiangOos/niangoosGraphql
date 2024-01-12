@@ -13,6 +13,7 @@ export const navigateTo = (url) => {
 const routes = {
 	404: "../templates/404.js",
 	"/": "../templates/signin.js",
+	"/profile": "../templates/profile.js",
 };
 
 const pageInstancesCache = {};

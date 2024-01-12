@@ -5,13 +5,13 @@
 	transform: translate(-50%, -50%);
 	display: grid;
 	place-items: center;
-	width: 350px;
+	width: 300px;
 	height: 480px;
 	padding: 25px;
 	background-color: #161616;
-	box-shadow: 0px 15px 60px #9969ff;
+	border-radius: 15px;
+	box-shadow: 0px 15px 60px rgba(153, 105, 255, 0.5), 0px 0px 30px 10px rgba(153, 105, 255, 0.5);
 	outline: 1px solid #9969ff;
-	border-radius: 10px;
 }
 
 body {
@@ -101,13 +101,10 @@ body {
 
 #forgot-pass {
 	text-align: center;
-	margin-top: 10px;
-}
-
-#forgot-pass a {
-	color: #868686;
-	font-size: 12px;
-	text-decoration: none;
+	margin-top: 50px;
+	color: #caadff;
+	font-size: 19px;
+	font-weight: 300;
 }
 
 #bar:before,

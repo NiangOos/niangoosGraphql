@@ -1,7 +1,9 @@
 export function DisplayError(errorMessage) {
 	const errortxtfield = document.getElementById("errortxtfield");
-	errortxtfield.style.color = "red";
 	errortxtfield.innerText = errorMessage;
+	setTimeout(() => {
+		errortxtfield.innerText = "";
+	}, 3000);
 }
 
 export function TogglePasswordVisibility(inputElement, spaninput) {
