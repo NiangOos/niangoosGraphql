@@ -6,6 +6,26 @@ export function DisplayError(errorMessage) {
 	}, 3000);
 }
 
+export async function makestyle(style) {
+	var linkElement = document.createElement("link");
+
+	linkElement.rel = "stylesheet";
+	linkElement.type = "text/css";
+	linkElement.href = style;
+
+	document.head.appendChild(linkElement);
+}
+
+export function formatBytes(xp) {
+	const e = (Math.log(xp) / Math.log(1000)) | 0;
+	const unit = `${"kMGTPEZY"[e - 1] || ""}B`;
+	const num = xp / Math.pow(1000, e);
+	const round = Math.round(num);
+	const value = round > 100 ? String(round) : num.toFixed(round > 10 ? 1 : 2);
+
+	return `${value} ${unit}`;
+}
+
 export function TogglePasswordVisibility(inputElement, spaninput) {
 	if (inputElement.type === "password") {
 		inputElement.type = "text";

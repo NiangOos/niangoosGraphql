@@ -52,6 +52,8 @@ export default class Signin extends AbstractView {
 	async render() {
 		document.title = "Sign In";
 
+		func.makestyle("/static/css/index.css");
+
 		const jwt = localStorage.getItem("jwt");
 		if (jwt) {
 			navigateTo("/profile");
