@@ -17,7 +17,7 @@ export const GET_USER_PROFILE = `
 				}
 				xpByProject: transactions(
 					where: { event: { object: { id: { _eq: 100256 } }, _and: { campus: { _eq: "dakar" } } }, _and: { type: { _eq: "xp" }, object: { type: { _eq: "project" } } } }
-					order_by: { createdAt: desc }
+					order_by: { createdAt: asc }
 				) {
 					createdAt
 					type

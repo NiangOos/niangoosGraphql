@@ -84,19 +84,7 @@ export default class Profile extends AbstractView {
 										<h6 class="mb-0">XP earned by project</h6>
 									</div>
 									<div id="xpByprojectchart">
-										<svg width="400" height="300">
-											<!-- Bar 1 -->
-											<rect x="50" y="200" width="50" height="50" fill="blue"></rect>
-											<text x="75" y="270" fill="black">Label 1</text>
-
-											<!-- Bar 2 -->
-											<rect x="150" y="150" width="50" height="100" fill="green"></rect>
-											<text x="175" y="270" fill="black">Label 2</text>
-
-											<!-- Bar 3 -->
-											<rect x="250" y="100" width="50" height="150" fill="orange"></rect>
-											<text x="275" y="270" fill="black">Label 3</text>
-										</svg>
+									<svg id="barChart" width="500" height="500"></svg>
 									</div>
 								</div>
 							</div>
@@ -154,8 +142,41 @@ export default class Profile extends AbstractView {
 			document.getElementById("xpamount").innerText = func.formatBytes(responseData.data.event_user[0].user.XPamount.aggregate.sum.amount);
 			document.getElementById("level").innerText = responseData.data.event_user[0].level;
 			document.getElementById("auditratio").innerText = parseFloat(responseData.data.event_user[0].user.auditRatio.toFixed(1));
+
+			const dataObject = {};
+
+			for (const iterator of responseData.data.event_user[0].user.xpByProject) {
+				dataObject[iterator.object.name] = iterator.amount;
+			}
+
+			createBarChart(dataObject, "barChart");
 		} catch (error) {
 			console.error("Erreur lors de la requête GraphQL:", error);
+			localStorage.removeItem("jwt");
+			navigateTo("/");
+			return;
 		}
+	}
+}
+
+function createBarChart(data, svgId) {
+	const svg = document.getElementById(svgId);
+	const maxValue = Math.max(...Object.values(data));
+	const barWidth = svg.clientWidth / Object.keys(data).length;
+	let currentXPosition = 0;
+
+	for (const key in data) {
+		const barHeight = (data[key] / maxValue) * svg.clientHeight;
+		const bar = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+
+		bar.setAttribute("x", currentXPosition);
+		bar.setAttribute("y", svg.clientHeight - barHeight);
+		bar.setAttribute("width", barWidth);
+		bar.setAttribute("height", barHeight);
+		bar.setAttribute("fill", "blue");
+
+		svg.appendChild(bar);
+
+		currentXPosition += barWidth;
 	}
 }
