@@ -168,25 +168,34 @@ function createBarChart(data, svgId) {
 	for (const key in data) {
 		const barHeight = (data[key] / maxValue) * svg.clientHeight;
 
-		// Création de la barre
 		const bar = document.createElementNS("http://www.w3.org/2000/svg", "rect");
 		bar.setAttribute("x", currentXPosition);
 		bar.setAttribute("y", svg.clientHeight - barHeight);
 		bar.setAttribute("width", barWidth);
 		bar.setAttribute("height", barHeight);
 		bar.setAttribute("fill", "blue");
+
+		bar.addEventListener("mouseover", () => showTooltip(key, data[key]));
+		bar.addEventListener("mouseout", hideTooltip);
+
 		svg.appendChild(bar);
 
-		// Ajout du libellé au-dessus de la barre (orienté verticalement)
-		const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-		label.setAttribute("x", currentXPosition + barWidth / 2);
-		label.setAttribute("y", svg.clientHeight - barHeight - 5); // ajustez la position du libellé comme vous le souhaitez
-		label.setAttribute("text-anchor", "middle");
-		label.setAttribute("dominant-baseline", "middle"); // Alignement vertical au milieu
-		label.setAttribute("transform", `rotate(-90 ${currentXPosition + barWidth / 2} ${svg.clientHeight - barHeight - 5})`);
-		label.textContent = key; // Utilisez la clé comme libellé
-		svg.appendChild(label);
-
 		currentXPosition += barWidth;
+	}
+
+	// Fonction pour afficher le tooltip
+	function showTooltip(key, value) {
+		const tooltip = document.createElement("div");
+		tooltip.className = "tooltip";
+		tooltip.textContent = `${key}: ${value}`;
+		document.body.appendChild(tooltip);
+	}
+
+	// Fonction pour masquer le tooltip
+	function hideTooltip() {
+		const tooltip = document.querySelector(".tooltip");
+		if (tooltip) {
+			tooltip.parentNode.removeChild(tooltip);
+		}
 	}
 }
