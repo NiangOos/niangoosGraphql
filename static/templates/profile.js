@@ -175,7 +175,7 @@ function createBarChart(data, svgId) {
 		bar.setAttribute("height", barHeight);
 		bar.setAttribute("fill", "blue");
 
-		bar.addEventListener("mouseover", () => showTooltip(key, data[key]));
+		bar.addEventListener("mouseover", () => showTooltip(key, data[key], currentXPosition, svg.clientHeight - barHeight));
 		bar.addEventListener("mouseout", hideTooltip);
 
 		svg.appendChild(bar);
@@ -184,10 +184,13 @@ function createBarChart(data, svgId) {
 	}
 
 	// Fonction pour afficher le tooltip
-	function showTooltip(key, value) {
+	function showTooltip(key, value, x, y) {
 		const tooltip = document.createElement("div");
 		tooltip.className = "tooltip";
 		tooltip.textContent = `${key}: ${value}`;
+		tooltip.style.position = "absolute";
+		tooltip.style.left = `${x}px`;
+		tooltip.style.top = `${y - 20}px`; // 20 pixels au-dessus de la barre
 		document.body.appendChild(tooltip);
 	}
 

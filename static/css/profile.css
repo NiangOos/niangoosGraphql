@@ -6,6 +6,13 @@
 	--dark: #000000;
 }
 
+.tooltip {
+	background-color: #333;
+	color: #fff;
+	padding: 5px;
+	border-radius: 3px;
+}
+
 .back-to-top {
 	position: fixed;
 	display: none;
