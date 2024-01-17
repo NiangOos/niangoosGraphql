@@ -8,7 +8,7 @@ export const GET_USER_PROFILE = `
 				login
 				attrs
 				auditRatio
-				XPamount: transactions_aggregate(distinct_on: [objectId], where: { event: { object: { id: { _eq: 100256 } }, _and: { campus: { _eq: "dakar" } } }, _and: { type: { _eq: "xp" } } }) {
+				XPamount: transactions_aggregate( where: { event: { object: { id: { _eq: 100256 } }, _and: { campus: { _eq: "dakar" } } }, _and: { type: { _eq: "xp" } } }) {
 					aggregate {
 						sum {
 							amount

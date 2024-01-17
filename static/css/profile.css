@@ -6,11 +6,30 @@
 	--dark: #000000;
 }
 
-.tooltip {
-	background-color: #333;
+body {
+	background-color: #212121;
+	background-image: url("https://learn.zone01dakar.sn/assets/img/01-trame.svg");
+	background-size: cover;
+}
+
+#tooltip {
+	position: absolute;
+	font-size: 25px;
 	color: #fff;
 	padding: 5px;
 	border-radius: 3px;
+}
+
+#tooltippie {
+	position: absolute;
+	font-size: 25px;
+	color: #fff;
+	padding: 5px;
+	border-radius: 3px;
+}
+
+#toggler {
+	cursor: pointer;
 }
 
 .back-to-top {
@@ -33,6 +52,10 @@
 	transition: opacity 0.5s ease-out, visibility 0s linear 0s;
 	visibility: visible;
 	opacity: 1;
+}
+
+.logout {
+	cursor: pointer;
 }
 
 /*** Button ***/
@@ -66,6 +89,10 @@
 	border-radius: 50px;
 }
 
+.titlepro {
+	color: #9969ff;
+}
+
 /*** Layout ***/
 .sidebar {
 	position: fixed;
@@ -75,7 +102,8 @@
 	width: 250px;
 	height: 100vh;
 	overflow-y: auto;
-	background: var(--secondary);
+	background-color: #161616;
+	box-shadow: 6px 6px 10px rgba(0, 0, 0, 1), 1px 1px 10px rgba(255, 255, 255, 0.6);
 	transition: 0.5s;
 	z-index: 999;
 }
