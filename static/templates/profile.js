@@ -16,9 +16,10 @@ export default class Profile extends AbstractView {
 				<div class="sidebar pe-4 pb-3">
 					<nav class="navbar bg-secondary navbar-dark">
 						<a href="/profile" data-link class="navbar-brand mx-4 mb-3">
-							<h3 class="text-primary logo"><i class="fa fa-user-edit me-2"></i><marquee>Graphiql</marquee></h3>
+							<h3 class="text-primary logo"><i class="fa fa-user-edit me-2"></i>Graphiql</h3>
 						</a>
-						<div class="navbar-nav w-100" id="whois"></div>
+						<div class="navbar-nav w-100" id="whois">
+						</div>
 					</nav>
 				</div>
 				<!-- Sidebar End -->
@@ -116,7 +117,7 @@ export default class Profile extends AbstractView {
 							<div class="col-sm-12 col-xl-6">
 								<div class="bg-secondary text-center rounded p-4">
 									<div class="d-flex align-items-center justify-content-between mb-4">
-										<h6 class="mb-0 titlepro">My skills</h6>
+										<h6 class="mb-0 titlepro">All yours skills</h6>
 									</div>
 									<div id="xpByprojectchart">
 										<div id="tooltippie"></div>
@@ -187,9 +188,24 @@ export default class Profile extends AbstractView {
 
 			createBarChart(dataObject, "barChart");
 			createPieChart(responseData.data.event_user[0].user.skill);
+			document.getElementById("whois").innerHTML = `
+				<div class="mb-0">
+					<img src="/static/assets/wave.gif" style="width: 100px; height: auto; border-radius: 50%;" />
+				</div>
+				<br />
+				<h6 class="mb-0">${responseData.data.event_user[0].user.firstName} ${responseData.data.event_user[0].user.lastName}</h6>
+				<br />
+				<h6 class="mb-0">alias ${responseData.data.event_user[0].user.login}</h6>
+				<br />
+				<h6 class="mb-0">${afficherMoisEtJour(responseData.data.event_user[0].user.attrs.dateOfBirth)}</h6>
+				<br />
+				<h6 class="mb-0">${responseData.data.event_user[0].user.attrs.nationality1}</h6>
+				<br />
+				<h6 class="mb-0">${responseData.data.event_user[0].user.attrs.gender}</h6>
+			`;
 		} catch (error) {
 			console.error("Erreur lors de la requête GraphQL:", error);
-			logout();
+			// logout();
 		}
 
 		window.logout = logout;
@@ -222,11 +238,14 @@ function createPieChart(skills) {
 
 		var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
 		path.setAttribute("d", `M${centerX},${centerY} L${x1},${y1} A${radius},${radius} 0 ${angle > 180 ? 1 : 0},1 ${x2},${y2} Z`);
+		path.setAttribute("stroke", "black");
+		path.setAttribute("stroke-width", "1.7");
+		path.setAttribute("stroke-opacity", "0.5");
 		path.setAttribute("fill", "#4D4D4D");
 
 		path.addEventListener("mouseover", () => {
 			path.setAttribute("fill", "#CAADFF");
-			showTooltippie(skill.type, percent);
+			showTooltippie(skill.type, percent, skill.amount);
 		});
 
 		path.addEventListener("mouseout", () => {
@@ -237,9 +256,9 @@ function createPieChart(skills) {
 		svg.appendChild(path);
 	});
 
-	function showTooltippie(key, value) {
+	function showTooltippie(key, value, skillown) {
 		const tooltip = document.getElementById("tooltippie");
-		tooltip.innerText = `${key.charAt(0).toUpperCase() + key.slice(1)}: ${value}`;
+		tooltip.innerText = `${key.replace("skill_", "").toUpperCase()}: ${value.toFixed(0)}% of all your skills and you have mastered ${skillown}%`;
 	}
 
 	function hideTooltippie() {
@@ -262,6 +281,9 @@ function createBarChart(data, svgId) {
 		bar.setAttribute("y", svg.clientHeight - barHeight);
 		bar.setAttribute("width", barWidth);
 		bar.setAttribute("height", barHeight);
+		bar.setAttribute("stroke", "black");
+		bar.setAttribute("stroke-width", "1.8");
+		bar.setAttribute("stroke-opacity", "0.7");
 		bar.setAttribute("fill", "#4D4D4D");
 
 		bar.addEventListener("mouseover", () => {
@@ -293,4 +315,16 @@ function logout() {
 	localStorage.removeItem("jwt");
 	navigateTo("/");
 	return;
+}
+
+function afficherMoisEtJour(tmp) {
+	var date = new Date(tmp);
+
+	var monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+
+	var month = monthNames[date.getMonth()];
+
+	var day = date.getDate().toString().padStart(2, "0");
+
+	return day + " " + month;
 }

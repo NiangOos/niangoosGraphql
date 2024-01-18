@@ -6075,6 +6075,18 @@ fieldset:disabled .btn {
 }
 .w-100 {
 	width: 100% !important;
+	position: absolute;
+	margin-left: 10px;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, 30%);
+	display: grid;
+	place-items: center;
+	padding: 25px;
+	background-color: #161616;
+	border-radius: 15px;
+	box-shadow: 0px 15px 60px rgba(153, 105, 255, 0.5), 0px 0px 30px 10px rgba(153, 105, 255, 0.5);
+	outline: 1px solid #9969ff;
 }
 .w-auto {
 	width: auto !important;
