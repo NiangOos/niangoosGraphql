@@ -4,12 +4,13 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 )
 
 var Handlers = struct {
 	Port string
 }{
-	Port: ":8080",
+	Port: envPortOr("8080"),
 }
 
 func main() {
@@ -36,4 +37,13 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, data interface{}) {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		log.Println("Internal Server Error:", err)
 	}
+}
+
+func envPortOr(port string) string {
+	// If `PORT` variable in environment exists, return it
+	if envPort := os.Getenv("PORT"); envPort != "" {
+		return ":" + envPort
+	}
+	//  Otherwise, return the value of `port` variable from function argument
+	return ":" + port
 }
