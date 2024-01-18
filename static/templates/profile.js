@@ -205,6 +205,7 @@ export default class Profile extends AbstractView {
 			`;
 		} catch (error) {
 			console.error("Erreur lors de la requête GraphQL:", error);
+			return;
 			// logout();
 		}
 
